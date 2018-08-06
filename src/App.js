@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   BrowserRouter,
-  // Route,
+  Route,
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { fetchRepos } from './actions';
+import { SidebarNav } from './modules';
+import { Repo } from './components';
 
 class App extends Component {
   componentDidMount() {
@@ -17,17 +19,17 @@ class App extends Component {
   }
 
   render() {
-    // const { repos = [] } = this.props;
+    const { repos = [] } = this.props;
 
     return (
       <BrowserRouter>
         <React.Fragment>
           <CssBaseline />
           <div className="app">
-            This is a good start!
+            <SidebarNav {...{ repos }} />
             {/* <Route exact path="/" component={} /> */}
 
-            {/* {repos && repos.length > 0
+            {repos && repos.length > 0
               ? repos.map(repo => (
                 <Route
                   exact
@@ -36,7 +38,7 @@ class App extends Component {
                   render={() => <Repo {...{ repo }} />}
                 />
               )) : <div />
-            } */}
+            }
           </div>
         </React.Fragment>
       </BrowserRouter>
@@ -47,12 +49,12 @@ class App extends Component {
 
 App.propTypes = {
   fetchRepos: PropTypes.func,
-  // repos: PropTypes.array,
+  repos: PropTypes.array,
 };
 
 App.defaultProps = {
   fetchRepos: () => undefined,
-  // repos: [],
+  repos: [],
 };
 
 function mapStateToProps({ repos }) {
