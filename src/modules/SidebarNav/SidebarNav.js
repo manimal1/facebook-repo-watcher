@@ -12,7 +12,7 @@ import Hidden from '@material-ui/core/Hidden';
 import MenuIcon from '@material-ui/icons/Menu';
 import SidebarMenu from './components';
 import { contributorsActions } from '../../actions';
-import { Repo } from '../../components';
+import { Repo, ReposList } from '../../components';
 
 const drawerWidth = 240;
 
@@ -52,6 +52,7 @@ const styles = theme => ({
 class SidebarNav extends React.Component {
   state = {
     isMobileOpen: false,
+    isRepoOpen: false,
     repo: {},
   };
 
@@ -59,7 +60,13 @@ class SidebarNav extends React.Component {
     const { handlefetchContributors } = this.props; // eslint-disable-line no-shadow
     await handlefetchContributors(url);
     this.setState({ repo });
+    this.setState({ isRepoOpen: true });
   };
+
+  handleLogoClick = (e) => {
+    e.preventDefault();
+    this.setState({ isRepoOpen: false });
+  }
 
   handleDrawerToggle = () => {
     this.setState(state => ({ isMobileOpen: !state.isMobileOpen }));
@@ -70,12 +77,20 @@ class SidebarNav extends React.Component {
       classes,
       theme,
       reposInfo,
+      topRepos,
       contributorsInfo,
       handleFetchPreviousRepos,
       handleFetchNextRepos,
     } = this.props;
-    const { isMobileOpen, repo } = this.state;
-    const { getRepoWithContributors } = this;
+    const {
+      isMobileOpen,
+      isRepoOpen,
+      repo,
+    } = this.state;
+    const {
+      getRepoWithContributors,
+      handleLogoClick,
+    } = this;
 
     return (
       <div className={classes.root}>
@@ -113,6 +128,7 @@ class SidebarNav extends React.Component {
                 getRepoWithContributors,
                 handleFetchPreviousRepos,
                 handleFetchNextRepos,
+                handleLogoClick,
               }}
             />
           </Drawer>
@@ -131,13 +147,17 @@ class SidebarNav extends React.Component {
                 getRepoWithContributors,
                 handleFetchPreviousRepos,
                 handleFetchNextRepos,
+                handleLogoClick,
               }}
             />
           </Drawer>
         </Hidden>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {contributorsInfo && contributorsInfo.contributors &&
+          {!isRepoOpen &&
+            <ReposList {...{ topRepos, getRepoWithContributors }} />
+          }
+          {isRepoOpen && contributorsInfo && contributorsInfo.contributors &&
             <Repo {...{ repo, contributorsInfo }} />
           }
         </main>
@@ -150,6 +170,7 @@ SidebarNav.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   reposInfo: PropTypes.object,
+  topRepos: PropTypes.array,
   contributorsInfo: PropTypes.object,
   handleFetchPreviousRepos: PropTypes.func,
   handleFetchNextRepos: PropTypes.func,
@@ -157,6 +178,7 @@ SidebarNav.propTypes = {
 
 SidebarNav.defaultProps = {
   reposInfo: {},
+  topRepos: [],
   contributorsInfo: {},
   handleFetchPreviousRepos: () => undefined,
   handleFetchNextRepos: () => undefined,

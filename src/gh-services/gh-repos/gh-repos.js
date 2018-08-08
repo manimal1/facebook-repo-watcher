@@ -35,6 +35,10 @@ export const fetchAppRepos = () => fetchFacebookRepos()
     return { repos, pagination };
   });
 
+export const fetchTopRepos = () => fetchFacebookRepos()
+  .then(repos => reposSortedByWatchersCount(repos))
+  .then(repos => repos.slice(0, 5));
+
 export const fetchReposByUrl = async (url) => {
   const reposApi = await axios.get(url);
   const { headers } = reposApi;

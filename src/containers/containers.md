@@ -1,5 +1,7 @@
 # 1. Containers
 
+I would normally also use containers!  But this is a small, specific project that I opted to use with modules only instead - this time :) !
+
 Containers should:
 - Maintain the application state based on user interaction
 - Be in control of rendering and re-rendering on a larger scale
