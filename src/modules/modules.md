@@ -5,16 +5,18 @@ Modules should:
 - Combine multiple compontents
 - Set their own state to react to user interaction
 
-Modules Should Not:
-- Update the shared state directly
-
-They should purely be presentational and interaction based
+They are both presentational and interaction based. They are specific, self-contained components with managed state and styling.
 
 like...
 ```js
 export class myCompontent extends Component {
   constructor(props) {
     super(props);
+    this.state = {};
+  }
+
+  actionHandler = () => {
+
   }
 
   render() {
@@ -23,4 +25,6 @@ export class myCompontent extends Component {
     )
   }
 }
+
+connect... with redux
 ```

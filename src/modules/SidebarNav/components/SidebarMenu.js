@@ -17,6 +17,8 @@ const styles = theme => ({ // eslint-disable-line no-unused-vars
     lineHeight: '64px',
     margin: '0px',
     paddingLeft: '24px',
+    color: theme.palette.primary.main,
+    cursor: 'pointer',
   },
   listItemText: {
     paddingLeft: '24px !important',
@@ -33,6 +35,7 @@ const SidebarMenu = (props) => {
     getRepoWithContributors,
     handleFetchPreviousRepos,
     handleFetchNextRepos,
+    handleLogoClick,
   } = props;
   let repos;
   if (reposInfo !== null) {
@@ -41,7 +44,12 @@ const SidebarMenu = (props) => {
 
   return (
     <div className="sidebar-menu">
-      <div className={classes.logoDivArea}>
+      {/* eslint-disable */}
+      <div 
+        className={classes.logoDivArea}
+        onClick={(e) => handleLogoClick(e)}
+      >
+      {/* eslint-enable */}
         <h3 className={classes.logoText}>
           Facebook Repos
         </h3>
@@ -63,7 +71,7 @@ const SidebarMenu = (props) => {
             return menuItem;
           })
         }
-        {reposInfo && reposInfo.pagination.prev &&
+        {reposInfo && reposInfo.pagination && reposInfo.pagination.prev &&
           (
             <div>
               <MenuItem onClick={() => handleFetchPreviousRepos(reposInfo.pagination.prev.url)}>
@@ -78,7 +86,7 @@ const SidebarMenu = (props) => {
             </div>
           )
         }
-        {reposInfo && reposInfo.pagination.next &&
+        {reposInfo && reposInfo.pagination && reposInfo.pagination.next &&
           (
             <div>
               <MenuItem onClick={() => handleFetchNextRepos(reposInfo.pagination.next.url)}>
@@ -104,6 +112,7 @@ SidebarMenu.propTypes = {
   getRepoWithContributors: PropTypes.func,
   handleFetchPreviousRepos: PropTypes.func,
   handleFetchNextRepos: PropTypes.func,
+  handleLogoClick: PropTypes.func,
 };
 
 SidebarMenu.defaultProps = {
@@ -112,6 +121,7 @@ SidebarMenu.defaultProps = {
   getRepoWithContributors: () => undefined,
   handleFetchPreviousRepos: () => undefined,
   handleFetchNextRepos: () => undefined,
+  handleLogoClick: () => undefined,
 };
 
 export default withStyles(styles, { withTheme: true })(SidebarMenu);
