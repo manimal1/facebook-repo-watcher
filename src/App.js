@@ -1,35 +1,33 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  BrowserRouter,
-  Route,
-} from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { fetchRepos } from './actions';
+import { repoActions } from './actions';
 import { SidebarNav } from './modules';
-import { Repo } from './components';
 
 class App extends Component {
   componentDidMount() {
-    const {
-      fetchRepos, // eslint-disable-line no-shadow
-    } = this.props;
-    fetchRepos();
+    const { handleFetchRepos } = this.props;
+    handleFetchRepos();
   }
 
   render() {
-    const { repos = [] } = this.props;
+    const {
+      reposInfo = [],
+      handleFetchPreviousRepos,
+      handleFetchNextRepos,
+    } = this.props;
 
     return (
       <BrowserRouter>
         <React.Fragment>
           <CssBaseline />
           <div className="app">
-            <SidebarNav {...{ repos }} />
+            <SidebarNav {...{ reposInfo, handleFetchPreviousRepos, handleFetchNextRepos }} />
             {/* <Route exact path="/" component={} /> */}
 
-            {repos && repos.length > 0
+            {/* {repos && repos.length > 0
               ? repos.map(repo => (
                 <Route
                   exact
@@ -38,7 +36,7 @@ class App extends Component {
                   render={() => <Repo {...{ repo }} />}
                 />
               )) : <div />
-            }
+            } */}
           </div>
         </React.Fragment>
       </BrowserRouter>
@@ -48,20 +46,36 @@ class App extends Component {
 
 
 App.propTypes = {
-  fetchRepos: PropTypes.func,
-  repos: PropTypes.array,
+  handleFetchRepos: PropTypes.func,
+  handleFetchPreviousRepos: PropTypes.func,
+  handleFetchNextRepos: PropTypes.func,
+  reposInfo: PropTypes.object,
 };
 
 App.defaultProps = {
-  fetchRepos: () => undefined,
-  repos: [],
+  handleFetchRepos: () => undefined,
+  handleFetchPreviousRepos: () => undefined,
+  handleFetchNextRepos: () => undefined,
+  reposInfo: {},
 };
 
-function mapStateToProps({ repos }) {
-  return { repos };
+const mapDispatchToProps = dispatch => ({
+  handleFetchRepos: () => {
+    dispatch(repoActions.fetchRepos());
+  },
+  handleFetchPreviousRepos: (url) => {
+    dispatch(repoActions.fetchReposByPreviousPagination(url));
+  },
+  handleFetchNextRepos: (url) => {
+    dispatch(repoActions.fetchReposByNextPagination(url));
+  },
+});
+
+function mapStateToProps({ reposInfo }) {
+  return { reposInfo };
 }
 
 export default connect(
   mapStateToProps,
-  { fetchRepos },
+  mapDispatchToProps,
 )(App);
