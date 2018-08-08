@@ -1,1 +1,1 @@
-export { default as fetchRepos } from './repoActions';
+export { default as repoActions } from './repoActions';
