@@ -1,13 +1,13 @@
 import {
   fetchAppRepos,
+  fetchReposByUrl,
   fetchRepoContributors,
-  fetchSortedReposByUrl,
 } from './gh-repos';
 
 const repoService = {
   fetchAppRepos,
+  fetchReposByUrl,
   fetchRepoContributors,
-  fetchSortedReposByUrl,
 };
 
 export default repoService;

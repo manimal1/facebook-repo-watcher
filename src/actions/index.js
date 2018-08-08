@@ -1,2 +1,2 @@
 export { default as repoActions } from './repoActions';
-export { default as fetchContributors } from './contributorsActions';
+export { default as contributorsActions } from './contributorsActions';

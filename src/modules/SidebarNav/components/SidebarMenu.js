@@ -5,10 +5,24 @@ import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 const styles = theme => ({ // eslint-disable-line no-unused-vars
+  logoDivArea: {
+    height: '64px',
+  },
+  logoText: {
+    lineHeight: '64px',
+    margin: '0px',
+    paddingLeft: '24px',
+  },
   listItemText: {
     paddingLeft: '24px !important',
+  },
+  paginationButton: {
+    margin: '0 auto',
   },
 });
 
@@ -27,10 +41,10 @@ const SidebarMenu = (props) => {
 
   return (
     <div className="sidebar-menu">
-      <div style={{ height: '64px' }}>
-        <h1 style={{ lineHeight: '64px', margin: '0px', paddingLeft: '24px' }}>
+      <div className={classes.logoDivArea}>
+        <h3 className={classes.logoText}>
           Facebook Repos
-        </h1>
+        </h3>
       </div>
       <Divider />
       <MenuList>
@@ -53,7 +67,12 @@ const SidebarMenu = (props) => {
           (
             <div>
               <MenuItem onClick={() => handleFetchPreviousRepos(reposInfo.pagination.prev.url)}>
-                <ListItemText primary="previous" />
+                <IconButton
+                  aria-label="Previous Page"
+                  className={classes.paginationButton}
+                >
+                  <KeyboardArrowLeft />
+                </IconButton>
               </MenuItem>
               <Divider />
             </div>
@@ -63,7 +82,12 @@ const SidebarMenu = (props) => {
           (
             <div>
               <MenuItem onClick={() => handleFetchNextRepos(reposInfo.pagination.next.url)}>
-                <ListItemText primary="next" />
+                <IconButton
+                  aria-label="Next Page"
+                  className={classes.paginationButton}
+                >
+                  <KeyboardArrowRight />
+                </IconButton>
               </MenuItem>
               <Divider />
             </div>

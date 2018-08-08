@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
 import MenuIcon from '@material-ui/icons/Menu';
 import SidebarMenu from './components';
-import { fetchContributors } from '../../actions';
+import { contributorsActions } from '../../actions';
 import { Repo } from '../../components';
 
 const drawerWidth = 240;
@@ -21,7 +21,6 @@ const styles = theme => ({
     flexGrow: 1,
     zIndex: 1,
     height: '100%',
-    overflow: 'hidden',
     position: 'relative',
     display: 'flex',
     width: '100%',
@@ -47,9 +46,6 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
-    // [theme.breakpoints.up('md')]: {
-    //   display: 'none',
-    // },
   },
 });
 
@@ -60,8 +56,8 @@ class SidebarNav extends React.Component {
   };
 
   getRepoWithContributors = async (repo, url) => {
-    const { fetchContributors } = this.props; // eslint-disable-line no-shadow
-    await fetchContributors(url);
+    const { handlefetchContributors } = this.props; // eslint-disable-line no-shadow
+    await handlefetchContributors(url);
     this.setState({ repo });
   };
 
@@ -94,7 +90,7 @@ class SidebarNav extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" noWrap>
-              Responsive drawer
+              Repo Information
             </Typography>
           </Toolbar>
         </AppBar>
@@ -141,8 +137,8 @@ class SidebarNav extends React.Component {
         </Hidden>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {contributorsInfo && contributorsInfo.contributors.length > 0 &&
-            <Repo {...{ classes, repo, contributorsInfo }} />
+          {contributorsInfo && contributorsInfo.contributors &&
+            <Repo {...{ repo, contributorsInfo }} />
           }
         </main>
       </div>
@@ -166,6 +162,12 @@ SidebarNav.defaultProps = {
   handleFetchNextRepos: () => undefined,
 };
 
+const mapDispatchToProps = dispatch => ({
+  handlefetchContributors: (url) => {
+    dispatch(contributorsActions.fetchContributors(url));
+  },
+});
+
 function mapStateToProps({ contributorsInfo }) {
   return { contributorsInfo };
 }
@@ -174,6 +176,6 @@ export default compose(
   withStyles(styles, { withTheme: true }),
   connect(
     mapStateToProps,
-    { fetchContributors },
+    mapDispatchToProps,
   ),
 )(SidebarNav);

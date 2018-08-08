@@ -8,13 +8,13 @@ const fetchRepos = () => async (dispatch) => {
 };
 
 const fetchReposByPreviousPagination = url => async (dispatch) => {
-  const reposInfo = await repoService.fetchSortedReposByUrl(url);
+  const reposInfo = await repoService.fetchReposByUrl(url);
 
   dispatch({ type: reposConstants.FETCH_PREVIOUS_REPOS, payload: reposInfo });
 };
 
 const fetchReposByNextPagination = url => async (dispatch) => {
-  const reposInfo = await repoService.fetchSortedReposByUrl(url);
+  const reposInfo = await repoService.fetchReposByUrl(url);
 
   dispatch({ type: reposConstants.FETCH_NEXT_REPOS, payload: reposInfo });
 };
