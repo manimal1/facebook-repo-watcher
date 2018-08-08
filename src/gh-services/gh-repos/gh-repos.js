@@ -7,7 +7,7 @@ const fetchFacebookRepos = async () => {
   const repos = await axios({
     method: 'GET',
     header: { 'content-type': 'application/json' },
-    url: `${GH_ORGS}/facebook/repos?page=1&per_page=10`,
+    url: `${GH_ORGS}/facebook/repos`,
   });
 
   return repos;
@@ -23,25 +23,19 @@ const reposSortedByWatchersCount = (repos) => {
 
 const getPaginationInfo = (headerLink) => {
   const parsedLinkHeader = parse(headerLink);
-  console.log(parsedLinkHeader);
   return parsedLinkHeader;
 };
 
 export const fetchAppRepos = () => fetchFacebookRepos()
-  .then((repos) => {
-    const { headers } = repos;
-    const pagination = getPaginationInfo(headers.link);
-
-    return { repos, pagination };
-  })
   .then((reposInfo) => {
-    const repos = reposSortedByWatchersCount(reposInfo.repos);
-    const { pagination } = reposInfo;
+    const { headers } = reposInfo;
+    const repos = reposSortedByWatchersCount(reposInfo);
+    const pagination = getPaginationInfo(headers.link);
 
     return { repos, pagination };
   });
 
-export const fetchSortedReposByUrl = async (url) => {
+export const fetchReposByUrl = async (url) => {
   const reposApi = await axios.get(url);
   const { headers } = reposApi;
   const repos = reposApi.data;
@@ -51,7 +45,7 @@ export const fetchSortedReposByUrl = async (url) => {
 };
 
 export const fetchRepoContributors = async (contributorsUrl) => {
-  const contributorsApi = await axios.get(`${contributorsUrl}?page=1&per_page=20`);
+  const contributorsApi = await axios.get(`${contributorsUrl}?page=1&per_page=10`);
   const { headers } = contributorsApi;
   const contributors = contributorsApi.data;
   const pagination = getPaginationInfo(headers.link);

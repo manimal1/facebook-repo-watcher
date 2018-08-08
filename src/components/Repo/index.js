@@ -1,53 +1,55 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import { ContributorsTable } from '../../modules';
 
 const styles = theme => ({ // eslint-disable-line no-unused-vars
   repo: {
-    position: 'absolute',
-    top: '64px',
-    left: '0px',
-    paddingLeft: '32px',
-    paddingTop: '32px',
-    [theme.breakpoints.up('md')]: {
-      left: '240px',
-    },
+    position: 'relative',
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  title: {
+    display: 'inline',
+  },
+  subtitle: {
+    display: 'inline',
   },
 });
 
 const Repo = (props) => {
-  const { classes = {}, repo = {}, contributorsInfo = [] } = props;
-  const { contributors } = contributorsInfo;
+  const { classes, repo, contributorsInfo } = props;
 
   return (
-    <main className={classes.repo}>
-      <h1>
-        {repo.name}
-      </h1>
-      <ul>
-        {contributors &&
-          contributors.map((contributor) => {
-            const item = (
-              <li>
-                {contributor.login}
-              </li>
-            );
-            return item;
-          })
-        }
-      </ul>
-    </main>
+    <section className={classes.repo}>
+      <div className={classes.header}>
+        <h1 className={classes.title}>
+          {repo.name}
+        </h1>
+        <p className={classes.subtitle}>
+          <span>
+            # watchers :
+          </span>
+          <span>
+            {repo.watchers}
+          </span>
+        </p>
+      </div>
+      <ContributorsTable {...{ contributorsInfo }} />
+    </section>
   );
 };
 
 Repo.propTypes = {
-  classes: PropTypes.object,
+  classes: PropTypes.object.isRequired,
   repo: PropTypes.object,
   contributorsInfo: PropTypes.object,
 };
 
 Repo.defaultProps = {
-  classes: {},
   repo: {},
   contributorsInfo: {},
 };
