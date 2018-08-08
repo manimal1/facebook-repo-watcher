@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -14,20 +13,33 @@ const styles = theme => ({ // eslint-disable-line no-unused-vars
 });
 
 const SidebarMenu = (props) => {
-  const { classes = {}, repos = [] } = props;
+  const {
+    classes,
+    reposInfo,
+    getRepoWithContributors,
+    handleFetchPreviousRepos,
+    handleFetchNextRepos,
+  } = props;
+  let repos;
+  if (reposInfo !== null) {
+    repos = reposInfo.repos; // eslint-disable-line prefer-destructuring
+  }
 
   return (
     <div className="sidebar-menu">
-      <div style={{ paddingTop: '64px' }} />
+      <div style={{ height: '64px' }}>
+        <h1 style={{ lineHeight: '64px', margin: '0px', paddingLeft: '24px' }}>
+          Facebook Repos
+        </h1>
+      </div>
       <Divider />
       <MenuList>
-        {repos &&
+        {repos && repos.length > 0 &&
           repos.map((repo) => {
             const menuItem = (
               <div key={repo.id}>
                 <MenuItem
-                  component={Link}
-                  to={`/${repo.name}`}
+                  onClick={() => getRepoWithContributors(repo, repo.contributors_url)}
                 >
                   <ListItemText inset primary={repo.name} className={classes.listItemText} />
                 </MenuItem>
@@ -37,6 +49,26 @@ const SidebarMenu = (props) => {
             return menuItem;
           })
         }
+        {reposInfo && reposInfo.pagination.prev &&
+          (
+            <div>
+              <MenuItem onClick={() => handleFetchPreviousRepos(reposInfo.pagination.prev.url)}>
+                <ListItemText primary="previous" />
+              </MenuItem>
+              <Divider />
+            </div>
+          )
+        }
+        {reposInfo && reposInfo.pagination.next &&
+          (
+            <div>
+              <MenuItem onClick={() => handleFetchNextRepos(reposInfo.pagination.next.url)}>
+                <ListItemText primary="next" />
+              </MenuItem>
+              <Divider />
+            </div>
+          )
+        }
       </MenuList>
     </div>
   );
@@ -44,12 +76,18 @@ const SidebarMenu = (props) => {
 
 SidebarMenu.propTypes = {
   classes: PropTypes.object,
-  repos: PropTypes.array,
+  reposInfo: PropTypes.object,
+  getRepoWithContributors: PropTypes.func,
+  handleFetchPreviousRepos: PropTypes.func,
+  handleFetchNextRepos: PropTypes.func,
 };
 
 SidebarMenu.defaultProps = {
   classes: {},
-  repos: [],
+  reposInfo: {},
+  getRepoWithContributors: () => undefined,
+  handleFetchPreviousRepos: () => undefined,
+  handleFetchNextRepos: () => undefined,
 };
 
 export default withStyles(styles, { withTheme: true })(SidebarMenu);

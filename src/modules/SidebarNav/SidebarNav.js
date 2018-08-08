@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -9,6 +11,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
 import MenuIcon from '@material-ui/icons/Menu';
 import SidebarMenu from './components';
+import { fetchContributors } from '../../actions';
+import { Repo } from '../../components';
 
 const drawerWidth = 240;
 
@@ -43,15 +47,22 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
+    // [theme.breakpoints.up('md')]: {
+    //   display: 'none',
+    // },
   },
 });
 
 class SidebarNav extends React.Component {
   state = {
     isMobileOpen: false,
+    repo: {},
+  };
+
+  getRepoWithContributors = async (repo, url) => {
+    const { fetchContributors } = this.props; // eslint-disable-line no-shadow
+    await fetchContributors(url);
+    this.setState({ repo });
   };
 
   handleDrawerToggle = () => {
@@ -59,8 +70,16 @@ class SidebarNav extends React.Component {
   };
 
   render() {
-    const { classes, theme, repos } = this.props;
-    const { isMobileOpen } = this.state;
+    const {
+      classes,
+      theme,
+      reposInfo,
+      contributorsInfo,
+      handleFetchPreviousRepos,
+      handleFetchNextRepos,
+    } = this.props;
+    const { isMobileOpen, repo } = this.state;
+    const { getRepoWithContributors } = this;
 
     return (
       <div className={classes.root}>
@@ -92,7 +111,14 @@ class SidebarNav extends React.Component {
               keepMounted: true, // Better open performance on mobile.
             }}
           >
-            <SidebarMenu {...{ repos }} />
+            <SidebarMenu
+              {...{
+                reposInfo,
+                getRepoWithContributors,
+                handleFetchPreviousRepos,
+                handleFetchNextRepos,
+              }}
+            />
           </Drawer>
         </Hidden>
         <Hidden smDown implementation="css">
@@ -103,11 +129,21 @@ class SidebarNav extends React.Component {
               paper: classes.drawerPaper,
             }}
           >
-            <SidebarMenu {...{ repos }} />
+            <SidebarMenu
+              {...{
+                reposInfo,
+                getRepoWithContributors,
+                handleFetchPreviousRepos,
+                handleFetchNextRepos,
+              }}
+            />
           </Drawer>
         </Hidden>
         <main className={classes.content}>
           <div className={classes.toolbar} />
+          {contributorsInfo && contributorsInfo.contributors.length > 0 &&
+            <Repo {...{ classes, repo, contributorsInfo }} />
+          }
         </main>
       </div>
     );
@@ -117,11 +153,27 @@ class SidebarNav extends React.Component {
 SidebarNav.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  repos: PropTypes.array,
+  reposInfo: PropTypes.object,
+  contributorsInfo: PropTypes.object,
+  handleFetchPreviousRepos: PropTypes.func,
+  handleFetchNextRepos: PropTypes.func,
 };
 
 SidebarNav.defaultProps = {
-  repos: [],
+  reposInfo: {},
+  contributorsInfo: {},
+  handleFetchPreviousRepos: () => undefined,
+  handleFetchNextRepos: () => undefined,
 };
 
-export default withStyles(styles, { withTheme: true })(SidebarNav);
+function mapStateToProps({ contributorsInfo }) {
+  return { contributorsInfo };
+}
+
+export default compose(
+  withStyles(styles, { withTheme: true }),
+  connect(
+    mapStateToProps,
+    { fetchContributors },
+  ),
+)(SidebarNav);

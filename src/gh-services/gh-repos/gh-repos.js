@@ -49,3 +49,12 @@ export const fetchSortedReposByUrl = async (url) => {
 
   return { repos, pagination };
 };
+
+export const fetchRepoContributors = async (contributorsUrl) => {
+  const contributorsApi = await axios.get(`${contributorsUrl}?page=1&per_page=20`);
+  const { headers } = contributorsApi;
+  const contributors = contributorsApi.data;
+  const pagination = getPaginationInfo(headers.link);
+
+  return { contributors, pagination };
+};
