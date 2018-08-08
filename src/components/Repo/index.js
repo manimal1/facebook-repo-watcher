@@ -16,25 +16,40 @@ const styles = theme => ({ // eslint-disable-line no-unused-vars
 });
 
 const Repo = (props) => {
-  const { repo = {}, classes = {} } = props;
+  const { classes = {}, repo = {}, contributorsInfo = [] } = props;
+  const { contributors } = contributorsInfo;
 
   return (
     <main className={classes.repo}>
       <h1>
         {repo.name}
       </h1>
+      <ul>
+        {contributors &&
+          contributors.map((contributor) => {
+            const item = (
+              <li>
+                {contributor.login}
+              </li>
+            );
+            return item;
+          })
+        }
+      </ul>
     </main>
   );
 };
 
 Repo.propTypes = {
-  repo: PropTypes.object,
   classes: PropTypes.object,
+  repo: PropTypes.object,
+  contributorsInfo: PropTypes.object,
 };
 
 Repo.defaultProps = {
-  repo: {},
   classes: {},
+  repo: {},
+  contributorsInfo: {},
 };
 
 export default withStyles(styles, { withTheme: true })(Repo);
